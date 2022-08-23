@@ -7,6 +7,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -38,13 +39,17 @@ public class ConfigSeguridad extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(HttpSecurity http) throws Exception {
-
         //csrf().disable(), solo para aplicaciones REST, cuando el BACKEND y FRONTEND estan en la misma app ahi si es necesario
-
         http.authorizeRequests().antMatchers(HttpMethod.GET,"/v1/categorias").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .csrf().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+    }
+
+    @Override
+    public void configure(WebSecurity web) throws Exception {
+        web.ignoring().antMatchers("/v2/api-docs","/configuration/**","/swagger-resources/**",
+                                    "/swagger-ui.html", "/webjars/**", "/api-docs/**");
     }
 }
